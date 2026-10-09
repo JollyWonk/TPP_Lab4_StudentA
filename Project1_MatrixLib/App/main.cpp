@@ -3,7 +3,7 @@
 #include "MatrixAnalysis.h"
 
 int main() {
-    std::cout << "=== Student A: Variant 5 - Matrix Analysis (Static Lib) ===" << std::endl;
+    std::cout << "=== Student A: Variant 5 - Matrix Analysis (Dynamic DLL) ===" << std::endl;
 
     const int n = 3;
 
@@ -14,15 +14,15 @@ int main() {
     };
     double invA[9] = { 0.0 };
 
-    double det = MatrixAnalysis::determinant(A, n);
-    bool singular = MatrixAnalysis::isSingular(A, n);
-    int r = MatrixAnalysis::rank(A, n, n);
+    double det = determinant(A, n);
+    int singular = isSingular(A, n);
+    int r = rank(A, n, n);
 
     std::cout << "Determinant: " << det << " (Expected: -1.0)" << std::endl;
-    std::cout << "Is Singular: " << (singular ? "Yes" : "No") << std::endl;
+    std::cout << "Is Singular: " << (singular == 1 ? "Yes" : "No") << std::endl;
     std::cout << "Rank:        " << r << " (Expected: 3)" << std::endl;
 
-    if (MatrixAnalysis::inverse(A, n, invA)) {
+    if (inverse(A, n, invA) == 1) {
         std::cout << "\nInverse Matrix:" << std::endl;
         std::cout << std::fixed << std::setprecision(2);
         for (int i = 0; i < n; ++i) {

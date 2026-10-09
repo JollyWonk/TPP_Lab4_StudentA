@@ -4,7 +4,7 @@
 #include <limits>
 #include <algorithm>
 
-namespace MatrixAnalysis {
+extern "C" {
 
     double determinant(const double* matrix, int n) {
         if (!matrix || n <= 0) return std::numeric_limits<double>::quiet_NaN();
@@ -43,11 +43,11 @@ namespace MatrixAnalysis {
         return det;
     }
 
-    bool isSingular(const double* matrix, int n) {
-        if (!matrix || n <= 0) return true;
+    int isSingular(const double* matrix, int n) {
+        if (!matrix || n <= 0) return -1;
         double det = determinant(matrix, n);
-        if (std::isnan(det)) return true;
-        return std::fabs(det) < 1e-9;
+        if (std::isnan(det)) return -1;
+        return (std::fabs(det) < 1e-9) ? 1 : 0;
     }
 
     int rank(const double* matrix, int rows, int cols) {
@@ -79,9 +79,9 @@ namespace MatrixAnalysis {
         return rankVal;
     }
 
-    bool inverse(const double* matrix, int n, double* outMatrix) {
-        if (!matrix || !outMatrix || n <= 0) return false;
-        if (isSingular(matrix, n)) return false;
+    int inverse(const double* matrix, int n, double* outMatrix) {
+        if (!matrix || !outMatrix || n <= 0) return -1;
+        if (isSingular(matrix, n) == 1) return 0;
 
         const double EPS = 1e-9;
         std::vector<double> aug(n * 2 * n, 0.0);
@@ -99,7 +99,7 @@ namespace MatrixAnalysis {
                 }
             }
 
-            if (std::fabs(aug[pivot * (2 * n) + i]) < EPS) return false;
+            if (std::fabs(aug[pivot * (2 * n) + i]) < EPS) return 0;
 
             if (i != pivot) {
                 for (int k = 0; k < 2 * n; ++k) {
@@ -125,7 +125,7 @@ namespace MatrixAnalysis {
                 outMatrix[i * n + j] = aug[i * (2 * n) + (n + j)];
             }
         }
-        return true;
+        return 1;
     }
 
 }
